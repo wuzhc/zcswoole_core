@@ -1,0 +1,20 @@
+{
+    "name": "wuzhc/zcswoole",
+    "description": "基于swoole封装的框架",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "wuzhc",
+            "email": "wuzhc2016@163.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "zcswoole\\" : "src"
+        }
+    }
+}
