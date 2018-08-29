@@ -5,7 +5,6 @@ namespace zcswoole\http;
 
 use Swoole\Http\Request;
 use Swoole\Http\Response;
-use zcswoole\SessionHandler;
 use zcswoole\utils\Random;
 
 /**
