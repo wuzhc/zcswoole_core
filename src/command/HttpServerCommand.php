@@ -6,7 +6,6 @@ namespace zcswoole\command;
 use Swoole\Http\Server;
 use swoole_http_server;
 use zcswoole\App;
-use zcswoole\Event;
 use zcswoole\SwooleEvent;
 use zcswoole\Config;
 use zcswoole\rpc\RpcProtocol;
@@ -27,7 +26,6 @@ class HttpServerCommand extends Command
 
     public function __construct()
     {
-        Event::on(self::BEFORE_START_SERVICE, 'before');
     }
 
     /**
