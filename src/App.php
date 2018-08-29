@@ -10,7 +10,6 @@ use zcswoole\rpc\RpcProtocol;
  * 为swoole_http_server和swoole_websocket_server提供服务
  * Class App
  * @property \zcswoole\Table $table
- * @property \zcswoole\components\Session $session
  * @property \zcswoole\components\Logger logger
  * @property \zcswoole\components\RpcClient rpcClient
  * @author wuzhc 2018-08-09
@@ -99,9 +98,6 @@ class App extends ServiceLocator
         return [
             'logger' => [
                 'class' => 'zcswoole\components\Logger'
-            ],
-            'session' => [
-                'class' => 'zcswoole\components\Session'
             ],
             'rpcClient' => [
                 'class' => 'zcswoole\components\RpcClient',
