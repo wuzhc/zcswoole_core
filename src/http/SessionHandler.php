@@ -13,7 +13,7 @@ use zcswoole\utils\File;
  */
 class SessionHandler implements SessionHandlerInterface
 {
-    private $savePath = '../../../../session_files';
+    private $savePath = 'session_files';
     private $sessionName = 'sess_';
     private $gc_probability = 1;
     private $gc_divisor = 100;
@@ -33,17 +33,17 @@ class SessionHandler implements SessionHandlerInterface
 
     public function read($id)
     {
-        return (string)@file_get_contents("$this->savePath/$this->sessionName.$id");
+        return (string)@file_get_contents("$this->savePath/$this->sessionName{$id}");
     }
 
     public function write($id, $data)
     {
-        return file_put_contents("$this->savePath/$this->sessionName . $id", $data) === false ? false : true;
+        return file_put_contents("$this->savePath/$this->sessionName{$id}", $data) === false ? false : true;
     }
 
     public function destroy($id)
     {
-        $file = "$this->savePath/$this->sessionName . $id";
+        $file = "$this->savePath/$this->sessionName{$id}";
         return File::delete($file);
     }
 

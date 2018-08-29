@@ -14,7 +14,7 @@ use zcswoole\utils\Random;
  */
 class Session
 {
-    public $savePath = '../../../../session_files';
+    public $savePath = 'session_files';
     public $sessionID;
     public $gc_maxlifetime = 86400;
     public $cookieKey = 'PHPSESSIONID';
@@ -35,7 +35,7 @@ class Session
         $this->handler = new SessionHandler();
         $this->start();
 
-        $cookie = $this->request->cookie[$this->cookieKey];
+        $cookie = $this->request->cookie[$this->cookieKey] ?? null;
         if (!$cookie) {
             $this->sessionID = Random::generateUniqueCode();
         } else {
