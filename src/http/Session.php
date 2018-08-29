@@ -41,7 +41,7 @@ class Session
             $this->response->cookie($this->cookieKey, $this->sessionID, 0, '/');
         } else {
             $this->sessionID = $cookie;
-            $this->sessionData = json_decode($this->handler->read($this->sessionID));
+            $this->sessionData = json_decode($this->handler->read($this->sessionID), true);
         }
     }
 
