@@ -38,9 +38,10 @@ class Session
         $cookie = $this->request->cookie[$this->cookieKey] ?? null;
         if (!$cookie) {
             $this->sessionID = Random::generateUniqueCode();
+            $this->response->cookie($this->cookieKey, $this->sessionID, 0, '/');
         } else {
             $this->sessionID = $cookie;
-            $this->sessionData = \swoole_serialize::unpack($this->handler->read($this->sessionID));
+            $this->sessionData = json_decode($this->handler->read($this->sessionID));
         }
     }
 
@@ -72,16 +73,21 @@ class Session
     public function drop()
     {
         $this->sessionData = null;
+        $this->response->cookie($this->cookieKey, null, null, '/');
     }
 
     public function __destruct()
     {
+        if ($this->isStart == false) {
+            return ;
+        }
+
         if (null === $this->sessionData) {
             $this->handler->destroy($this->sessionID);
-            $this->response->cookie($this->cookieKey, null, null, '/');
         } else {
-            $this->handler->write($this->sessionID, \swoole_serialize::pack($this->sessionData));
-            $this->response->cookie($this->cookieKey, $this->sessionID, 0, '/');
+            $this->handler->write($this->sessionID, json_encode($this->sessionData));
         }
+        $this->handler->close();
+        $this->isStart = false;
     }
 }
