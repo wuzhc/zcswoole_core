@@ -1,6 +1,6 @@
 <?php
 
-namespace zcswoole;
+namespace zcswoole\http;
 
 
 use SessionHandlerInterface;
