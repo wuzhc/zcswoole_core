@@ -111,8 +111,6 @@ class HttpServerCommand extends Command
         $this->onEvent();
         $this->addListenerForStat();
         $this->beforeStart();
-
-        Event::trigger(self::BEFORE_START_SERVICE);
         Console::msg('http starting');
         (new App($this->server))->start();
     }
