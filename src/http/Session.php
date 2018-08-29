@@ -79,8 +79,10 @@ class Session
     {
         if (null === $this->sessionData) {
             $this->handler->destroy($this->sessionID);
+            $this->response->cookie($this->cookieKey, null, null, '/');
         } else {
             $this->handler->write($this->sessionID, \swoole_serialize::pack($this->sessionData));
+            $this->response->cookie($this->cookieKey, $this->sessionID, 0, '/');
         }
     }
 }
