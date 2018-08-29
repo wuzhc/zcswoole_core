@@ -7,6 +7,7 @@ use Swoole\Http\Server;
 use swoole_http_server;
 use zcswoole\App;
 use zcswoole\Event;
+use zcswoole\SwooleEvent;
 use zcswoole\Config;
 use zcswoole\rpc\RpcProtocol;
 use zcswoole\utils\Console;
@@ -19,10 +20,15 @@ use zcswoole\utils\Console;
  */
 class HttpServerCommand extends Command
 {
-    use Event;
+    use SwooleEvent;
 
     /** @var Server */
     protected $server;
+
+    public function __construct()
+    {
+        Event::on(self::BEFORE_START_SERVICE, 'before');
+    }
 
     /**
      * @param CommandContext $context
@@ -94,6 +100,8 @@ class HttpServerCommand extends Command
         $server->send($fd, RpcProtocol::encode(['body' => $body, 'time'=>$time, 'status'=>$status], $header['encodeType']));
     }
 
+    const BEFORE_START_SERVICE = 'before_start_service';
+
     /**
      * 服务启动
      */
@@ -105,6 +113,8 @@ class HttpServerCommand extends Command
         $this->onEvent();
         $this->addListenerForStat();
         $this->beforeStart();
+
+        Event::trigger(self::BEFORE_START_SERVICE);
         Console::msg('http starting');
         (new App($this->server))->start();
     }

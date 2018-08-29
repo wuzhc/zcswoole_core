@@ -5,7 +5,7 @@ namespace zcswoole\command;
 
 use swoole_server;
 use zcswoole\App;
-use zcswoole\Event;
+use zcswoole\SwooleEvent;
 use zcswoole\Config;
 
 /**
@@ -16,7 +16,7 @@ use zcswoole\Config;
  */
 class ServerCommand extends Command
 {
-    use Event;
+    use SwooleEvent;
 
     /** @var \Swoole\Server */
     private $_server;

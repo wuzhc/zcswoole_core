@@ -11,11 +11,11 @@ use zcswoole\http\Router;
 use zcswoole\utils\Console;
 
 /**
- * Trait Event
+ * Trait SwooleEvent
  * @package zcswoole\event
  * @author wuzhc 2018-08-09
  */
-trait Event
+trait SwooleEvent
 {
     /**
      * 1.6.11之后Task进程中也会触发onWorkerStart事件,

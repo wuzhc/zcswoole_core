@@ -24,6 +24,8 @@ class HttpController
     protected $response;
     /** @var Server */
     protected $server;
+    /** @var Session */
+    protected $session;
 
     /**
      * Controller constructor.
@@ -35,6 +37,7 @@ class HttpController
         $this->request = $request;
         $this->response = $response;
         $this->server = ZCSwoole::$app->server;
+        $this->session = new Session($request, $response);
     }
 
     /**

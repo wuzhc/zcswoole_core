@@ -6,9 +6,8 @@ namespace zcswoole\command;
 use Swoole\WebSocket\Server;
 use swoole_websocket_server;
 use zcswoole\App;
-use zcswoole\Event;
 use zcswoole\Config;
-use zcswoole\rpc\RpcProtocol;
+use zcswoole\SwooleEvent;
 use zcswoole\utils\Console;
 
 /**
@@ -19,7 +18,7 @@ use zcswoole\utils\Console;
  */
 class WebSocketServerCommand extends Command
 {
-    use Event;
+    use SwooleEvent;
 
     /** @var Server */
     protected $server;
