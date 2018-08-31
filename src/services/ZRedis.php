@@ -4,10 +4,20 @@ namespace zcswoole\services;
 
 
 use zcswoole\Config;
-use zcswoole\utils\Console;
 
 /**
  * Class ZRedis
+ * @method mixed set($key, $value, $timeout = 0)
+ * @method mixed incrBy($key, $value)
+ * @method mixed incr($key)
+ * @method mixed hSet($key, $hashKey, $value)
+ * @method mixed hMSet($key, $hashKeys)
+ * @method mixed hIncrBy($key, $hashKey, $value)
+ * @method mixed hGet($key, $hashKey)
+ * @method mixed rPop($key) 列表出队
+ * @method mixed lLen($key) 列表长度
+ * @method mixed sCard($key)
+ * @method mixed keys($pattern)
  * @package zcswoole\services
  * @author wuzhc 2018-08-14
  */
@@ -26,7 +36,7 @@ class ZRedis
             $this->_redis = new \Redis();
             $this->_redis->connect($config['host']??'127.0.0.1',$config['port']??6379);
         } catch (\Error $e) {
-            Console::error($e->getMessage());
+            echo $e->getMessage() . "\r\n";
         }
     }
 
@@ -41,25 +51,9 @@ class ZRedis
         return self::$_instance;
     }
 
-    public function set($key, $value, $timeout = 0)
-    {
-        $this->_redis->set($key, $value, $timeout);
-    }
-
     public function get($key, $default = null)
     {
         return $this->_redis->get($key) ?? $default;
-    }
-
-    /**
-     * @param $key
-     * @param $hashKey
-     * @param $value
-     * @return int
-     */
-    public function hSet($key, $hashKey, $value)
-    {
-        return $this->_redis->hSet($key, $hashKey, $value);
     }
 
     /**
@@ -81,11 +75,6 @@ class ZRedis
             $this->expire($key, $timeout);
         }
         return true;
-    }
-
-    public function hGet($key, $hashKey)
-    {
-        return $this->_redis->hGet($key, $hashKey);
     }
 
     public function hGetAll($key)
@@ -142,6 +131,16 @@ class ZRedis
     public function expire($key, $timeout)
     {
         $this->_redis->expire($key, $timeout);
+    }
+
+    public function __call($method, $params)
+    {
+        try {
+            $reflectionMethod = new \ReflectionMethod($this->_redis, $method);
+            return $reflectionMethod->invokeArgs($this->_redis, $params);
+        } catch (\Error $e) {
+            echo $e->getMessage() . "\r\n";
+        }
     }
 
     private function __clone()
