@@ -34,8 +34,8 @@ class Router
      */
     public function handleRequest(): array
     {
-        $action = Config::get('defaultAction') ?? $this->defaultAction;
-        $controller = Config::get('defaultController') ?? $this->defaultController;
+        $defaultAction = Config::get('defaultAction') ?? $this->defaultAction;
+        $defaultController = Config::get('defaultController') ?? $this->defaultController;
 
         $pathInfo = $this->request->server['path_info'];
         $router = array_values(array_filter(explode('/', $pathInfo)));
@@ -44,14 +44,19 @@ class Router
         // 路由解析
         if ($count == 1) {
             $controller = $router[0];
+            $action = $defaultAction;
             $bashPath = array();
         } elseif ($count == 2) {
             list($controller, $action) = $router;
             $bashPath = array();
-        } else {
+        } elseif ($count > 2) {
             $controller = $router[$count - 2];
             $action = $router[$count - 1];
             $bashPath = array_slice($router, 0, $count - 2);
+        } else {
+            $controller = $defaultController;
+            $action = $defaultAction;
+            $bashPath = array();
         }
 
         $bashPath = $bashPath ? '\\' . implode('\\', $bashPath) . '\\' : '\\';

@@ -52,7 +52,7 @@ class HttpController extends Controller
         $suffix = Config::get('template_file_suffix', '.html');
 
         $viewDir = DIR_ROOT . '/app/views/' . $theme . '/';
-        $controllerDir = str_replace('app\controllers\\', '', get_class($this));
+        $controllerDir = str_replace('app\controllers\\', '', str_replace('Controller', '', get_class($this)));
         $templateFile = $this->actionID . $suffix;
 
         if ($template) {
