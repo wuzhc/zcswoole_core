@@ -4,6 +4,7 @@ namespace zcswoole\http;
 
 
 use zcswoole\Config;
+use zcswoole\Controller;
 use zcswoole\ZCSwoole;
 use Swoole\Http\Response;
 use Swoole\Http\Request;
@@ -14,10 +15,8 @@ use Swoole\Http\Server;
  * @package zcswoole\http
  * @author wuzhc 2018-08-09
  */
-class HttpController
+class HttpController extends Controller
 {
-    /** @var string 动作 */
-    public $actionID;
     /** @var Request $request */
     protected $request;
     /** @var Response $response */
@@ -38,20 +37,6 @@ class HttpController
         $this->response = $response;
         $this->server = ZCSwoole::$app->server;
         $this->session = new Session($request, $response);
-    }
-
-    /**
-     * 在action之前运行,例如可以处理一些统一认证
-     */
-    public function beforeAction()
-    {
-    }
-
-    /**
-     * 在action之后运行,例如可以处理一些日志类操作
-     */
-    public function afterAction()
-    {
     }
 
     /**

@@ -32,7 +32,7 @@ class Router
      * http://127.0.0.1:9501/index/index/index => new(/app/controllers/index/Index())->index()
      * @return array
      */
-    public function handleRequest():array
+    public function handleRequest(): array
     {
         $action = Config::get('defaultAction') ?? $this->defaultAction;
         $controller = Config::get('defaultController') ?? $this->defaultController;
@@ -44,19 +44,19 @@ class Router
         // 路由解析
         if ($count == 1) {
             $controller = $router[0];
-            $router = array();
+            $bashPath = array();
         } elseif ($count == 2) {
             list($controller, $action) = $router;
-            $router = array();
-        } elseif ($count > 2) {
-            $controller = $router[$count-2];
-            $action = $router[$count-1];
-            unset($router[$count-1],$router[$count-2]);
+            $bashPath = array();
+        } else {
+            $controller = $router[$count - 2];
+            $action = $router[$count - 1];
+            $bashPath = array_slice($router, 0, $count - 2);
         }
 
-        $path = $router ? '\\' . implode('\\', $router) . '\\' : '\\';
-        $controllerClass = '\app\controllers' . $path . ucfirst($controller);
+        $bashPath = $bashPath ? '\\' . implode('\\', $bashPath) . '\\' : '\\';
+        $controllerClass = '\app\controllers' . $bashPath . ucfirst($controller) . 'Controller';
 
-        return [$controllerClass,$action];
+        return [$controllerClass, $action];
     }
 }
