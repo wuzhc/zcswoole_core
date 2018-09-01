@@ -90,7 +90,7 @@ trait SwooleEvent
                 $response->end('Nothing');
             }
         } else {
-            $router = new Router($request);
+            $router = new RouterParse($request->server['path_info']);
             list($controller, $action) = $router->handleRequest();
 
             try {

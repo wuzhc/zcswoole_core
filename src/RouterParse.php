@@ -4,7 +4,6 @@ namespace zcswoole\http;
 
 
 use zcswoole\Config;
-use Swoole\Http\Request;
 
 /**
  * 一个简单路由实现
@@ -12,17 +11,16 @@ use Swoole\Http\Request;
  * @package zcswoole
  * @author wuzhc 2018-08-09
  */
-class Router
+class RouterParse
 {
     public $defaultController = 'index';
     public $defaultAction = 'index';
 
-    /** @var Request */
-    public $request;
+    public $pathInfo;
 
-    public function __construct(Request $request)
+    public function __construct($pathInfo)
     {
-        $this->request = $request;
+        $this->pathInfo = $pathInfo;
     }
 
     /**
@@ -37,8 +35,7 @@ class Router
         $defaultAction = Config::get('defaultAction') ?? $this->defaultAction;
         $defaultController = Config::get('defaultController') ?? $this->defaultController;
 
-        $pathInfo = $this->request->server['path_info'];
-        $router = array_values(array_filter(explode('/', $pathInfo)));
+        $router = array_values(array_filter(explode('/', $this->pathInfo)));
         $count = count($router);
 
         // 路由解析
