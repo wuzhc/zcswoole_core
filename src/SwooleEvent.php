@@ -7,8 +7,7 @@ use Swoole\Http\Request;
 use Swoole\Http\Response;
 use Swoole\Server;
 use zcswoole\http\HttpController;
-use zcswoole\http\Router;
-use zcswoole\utils\Console;
+use zcswoole\RouterParse;
 
 /**
  * Trait SwooleEvent

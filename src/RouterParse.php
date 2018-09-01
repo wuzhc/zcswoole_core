@@ -1,9 +1,7 @@
 <?php
 
-namespace zcswoole\http;
+namespace zcswoole;
 
-
-use zcswoole\Config;
 
 /**
  * 一个简单路由实现
