@@ -4,7 +4,7 @@ namespace zcswoole\http;
 
 
 use SessionHandlerInterface;
-use zcswoole\utils\File;
+use zcswoole\utils\FileUtil;
 
 /**
  * session处理器
@@ -22,7 +22,7 @@ class SessionHandler implements SessionHandlerInterface
     {
         $this->savePath = $savePath;
         $this->sessionName = $sessionName;
-        File::createDir($this->savePath);
+        FileUtil::createDir($this->savePath);
         return true;
     }
 
@@ -44,7 +44,7 @@ class SessionHandler implements SessionHandlerInterface
     public function destroy($id)
     {
         $file = "$this->savePath/$this->sessionName{$id}";
-        return File::delete($file);
+        return FileUtil::delete($file);
     }
 
     public function gc($maxlifetime)

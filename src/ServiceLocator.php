@@ -3,7 +3,7 @@
 namespace zcswoole;
 
 
-use zcswoole\utils\Factory;
+use zcswoole\utils\FactoryUtil;
 
 /**
  * 服务定位器
@@ -66,7 +66,7 @@ class ServiceLocator implements ServiceLocatorInterface
 
         $className = $definition['class'];
         unset($definition['class']);
-        return $this->_components[$id] = Factory::createObject($className, [], $definition);
+        return $this->_components[$id] = FactoryUtil::createObject($className, [], $definition);
     }
 
     /**

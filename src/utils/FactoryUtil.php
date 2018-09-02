@@ -5,7 +5,12 @@ namespace zcswoole\utils;
 
 use ReflectionClass;
 
-class Factory
+/**
+ * Class FactoryUtil
+ * @package zcswoole\utils
+ * @author wuzhc
+ */
+class FactoryUtil
 {
     /**
      * 创建对象

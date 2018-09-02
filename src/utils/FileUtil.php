@@ -3,11 +3,11 @@
 namespace zcswoole\utils;
 
 /**
- * Class File
+ * Class FileUtil
  * @package zcswoole\utils
  * @author wuzhc 2018-08-28
  */
-class File
+class FileUtil
 {
     /**
      * 文件后缀明

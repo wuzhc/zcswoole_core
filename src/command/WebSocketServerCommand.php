@@ -8,7 +8,7 @@ use swoole_websocket_server;
 use zcswoole\App;
 use zcswoole\Config;
 use zcswoole\SwooleEvent;
-use zcswoole\utils\Console;
+use zcswoole\utils\ConsoleUtil;
 
 /**
  * swoole_http_server服务
@@ -55,7 +55,7 @@ class WebSocketServerCommand extends Command
         $this->onEvent();
         $this->addListenerForStat();
         $this->beforeStart();
-        Console::msg('webSocket starting');
+        ConsoleUtil::msg('webSocket starting');
         (new App($this->server))->start();
     }
 

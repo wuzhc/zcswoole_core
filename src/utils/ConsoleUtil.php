@@ -2,8 +2,12 @@
 
 namespace zcswoole\utils;
 
-
-class Console
+/**
+ * Class ConsoleUtil
+ * @package zcswoole\utils
+ * @author wuzhc
+ */
+class ConsoleUtil
 {
     /**
      * 帮助信息

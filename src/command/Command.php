@@ -2,7 +2,7 @@
 
 namespace zcswoole\command;
 use zcswoole\Config;
-use zcswoole\utils\Console;
+use zcswoole\utils\ConsoleUtil;
 
 
 /**
@@ -35,9 +35,9 @@ abstract class Command
         $pid = file_get_contents($config['setting']['pid_file']);
         if (posix_kill($pid, 0)) {
             if (posix_kill($pid, SIGUSR1)) {
-                Console::success('reload success');
+                ConsoleUtil::success('reload success');
             } else {
-                Console::error('reload failed');
+                ConsoleUtil::error('reload failed');
             }
         }
     }
@@ -52,9 +52,9 @@ abstract class Command
         $pid = file_get_contents($config['setting']['pid_file']);
         if (posix_kill($pid, 0)) {
             if (posix_kill($pid, SIGTERM)) {
-                Console::success('stop success');
+                ConsoleUtil::success('stop success');
             } else {
-                Console::error('stop failed');
+                ConsoleUtil::error('stop failed');
             }
         }
     }

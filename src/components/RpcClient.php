@@ -6,7 +6,6 @@ namespace zcswoole\components;
 use common\config\Constant;
 use Swoole\Client;
 use zcswoole\rpc\RpcProtocol;
-use zcswoole\utils\Random;
 
 /**
  * rpc客户端

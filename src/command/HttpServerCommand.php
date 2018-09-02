@@ -11,7 +11,7 @@ use zcswoole\Router;
 use zcswoole\SwooleEvent;
 use zcswoole\Config;
 use zcswoole\rpc\RpcProtocol;
-use zcswoole\utils\Console;
+use zcswoole\utils\ConsoleUtil;
 
 /**
  * swoole_http_server服务
@@ -133,7 +133,7 @@ class HttpServerCommand extends Command
         $this->onEvent();
         $this->addListenerForStat();
         $this->beforeStart();
-        Console::msg('http starting');
+        ConsoleUtil::msg('http starting');
         (new App($this->server))->start();
     }
 

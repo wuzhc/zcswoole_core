@@ -1,15 +1,14 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: wuzhc
- * Date: 18-8-29
- * Time: 下午10:57
- */
 
 namespace zcswoole\utils;
 
-
-class Random
+/**
+ * 生成随机值工具类
+ * Class RandomUtil
+ * @package zcswoole\utils
+ * @author wuzhc 2018-08-29
+ */
+class RandomUtil
 {
     /**
      * 随机字符串
@@ -22,6 +21,8 @@ class Random
         if ($len <= 0) {
             return '';
         }
+
+        mt_srand(); // @see https://wiki.swoole.com/wiki/page/732.html
 
         if ($type == 1) {
             $str = '0123456789';

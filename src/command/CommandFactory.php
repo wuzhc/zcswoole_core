@@ -5,7 +5,7 @@ namespace zcswoole\command;
 
 use ReflectionClass;
 use zcswoole\Config;
-use zcswoole\utils\Console;
+use zcswoole\utils\ConsoleUtil;
 
 /**
  * 生成命令对象
@@ -22,7 +22,7 @@ class CommandFactory
     public static function getCommand($cmd)
     {
         if (preg_match('/\W/', $cmd)) {
-            Console::error('非法命令');
+            ConsoleUtil::error('非法命令');
         }
 
         // TODO 为什么是命名空间而不是路径,因为可以使用composer的autoload机制自动加载类,实现简单
@@ -33,12 +33,12 @@ class CommandFactory
             $className = $namespace . '\\' . ucfirst($cmd) . 'Command';
         }
         if (!class_exists($className)) {
-            Console::error("'$className' not exist");
+            ConsoleUtil::error("'$className' not exist");
         }
 
         $classObj = new $className();
         if (!($classObj instanceof Command)) {
-            Console::error("'$className is not an instance of 'Command'");
+            ConsoleUtil::error("'$className is not an instance of 'Command'");
         }
 
         return $classObj;

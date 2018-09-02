@@ -1,7 +1,7 @@
 <?php
 
 namespace zcswoole\command;
-use zcswoole\utils\Console;
+use zcswoole\utils\ConsoleUtil;
 
 
 /**
@@ -26,7 +26,7 @@ class CommandContext
     {
         global $argv, $argc;
         if ($argc < 3 || ($argc == 3 && $argv[1] == '--help')) {
-            Console::help($this->_entryFile);
+            ConsoleUtil::help($this->_entryFile);
         }
 
         $this->_cmd = $argv[1];
