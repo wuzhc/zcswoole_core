@@ -93,4 +93,31 @@ class RpcProtocol
 
         return [self::ERR_UNPACK_OK, $header, $body];
     }
+
+    /**
+     * 状态码消息
+     * @param $code
+     * @return string
+     */
+    public static function codeMsg($code)
+    {
+        switch ($code) {
+            case self::ERR_DATA_INCORRECT:
+                $msg = '解包失败,数据格式不正确';
+                break;
+            case self::ERR_PARSE_HEADER_FAILED:
+                $msg = '解包失败,包头解析错误';
+                break;
+            case self::ERR_PARSE_BODY_FAILED:
+                $msg = '解包失败,包体长度错误';
+                break;
+            case self::ERR_UNPACK_OK:
+                $msg = '解包成功';
+                break;
+            default:
+                $msg = '解包失败,未知错误';
+        }
+
+        return $msg;
+    }
 }

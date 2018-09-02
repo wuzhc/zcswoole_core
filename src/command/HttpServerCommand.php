@@ -3,9 +3,11 @@
 namespace zcswoole\command;
 
 
+use common\config\Constant;
 use Swoole\Http\Server;
 use swoole_http_server;
 use zcswoole\App;
+use zcswoole\Router;
 use zcswoole\SwooleEvent;
 use zcswoole\Config;
 use zcswoole\rpc\RpcProtocol;
@@ -78,27 +80,47 @@ class HttpServerCommand extends Command
      */
     public function rpcReceive(Server $server, $fd, $reactorID, $data)
     {
-        list($status, $header, $body) = RpcProtocol::decode($data);
+        $res = null;
+        $t1 = microtime(true);
+        list($code, $header, $body) = RpcProtocol::decode($data);
 
         // 解包成功后处理业务
-        $t1 = microtime(true);
-        if ($status === RpcProtocol::ERR_UNPACK_OK) {
-            for ($i=0;$i<10000000;$i++) {
-
+        if ($code === RpcProtocol::ERR_UNPACK_OK) {
+            $target = $body['router'] ?? '';
+            $params = $body['params'] ?? [];
+            $router = new Router($target);
+            list($controller, $action) = $router->parse();
+            if (class_exists($controller)) {
+                try {
+                    $res = call_user_func_array([$controller, $action], $params);
+                    if (false === $res) {
+                        $status = Constant::STATUS_FAILED;
+                        $msg = "call $router failed";
+                    } else {
+                        $status = Constant::STATUS_SUCCESS;
+                        $msg = 'success';
+                    }
+                } catch (\Exception $e) {
+                    $msg = $e->getMessage();
+                    $status = Constant::STATUS_FAILED;
+                }
+            } else {
+                $msg = "Class $controller is not exist";
+                $status = Constant::STATUS_FAILED;
             }
-            $status = 'success';
         } else {
-            $status = 'failed';
+            $msg = RpcProtocol::codeMsg($code);
+            $status = Constant::STATUS_FAILED;
         }
 
-        $time = microtime(true) - $t1;
-
-        echo $time . PHP_EOL;
         // 通知结果给客户端
-        $server->send($fd, RpcProtocol::encode(['body' => $body, 'time'=>$time, 'status'=>$status], $header['encodeType']));
+        $server->send($fd, RpcProtocol::encode([
+            'data'   => $res,
+            'time'   => microtime(true) - $t1,
+            'status' => $status,
+            'msg'    => $msg
+        ], $header['encodeType']));
     }
-
-    const BEFORE_START_SERVICE = 'before_start_service';
 
     /**
      * 服务启动

@@ -37,7 +37,7 @@ class Session
 
         $cookie = $this->request->cookie[$this->cookieKey] ?? null;
         if (!$cookie) {
-            $this->sessionID = Random::generateUniqueCode();
+            $this->sessionID = Random::generateUniqueStr();
             $this->response->cookie($this->cookieKey, $this->sessionID, 0, '/');
         } else {
             $this->sessionID = $cookie;

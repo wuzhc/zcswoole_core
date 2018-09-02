@@ -46,8 +46,18 @@ class Random
      * 唯一字符串
      * @return string
      */
-    public static function generateUniqueCode()
+    public static function generateUniqueStr()
     {
-        return md5(uniqid(microtime(true),true));
+        return md5(uniqid(microtime(true), true));
+    }
+
+    /**
+     * 唯一数字
+     * @return int
+     */
+    public static function generateUniqueNum()
+    {
+        $us = strstr(microtime(), ' ', true);
+        return intval(strval($us * 1000 * 1000) . rand(100, 999));
     }
 }

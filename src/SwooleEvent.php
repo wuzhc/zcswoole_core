@@ -7,7 +7,6 @@ use Swoole\Http\Request;
 use Swoole\Http\Response;
 use Swoole\Server;
 use zcswoole\http\HttpController;
-use zcswoole\RouterParse;
 
 /**
  * Trait SwooleEvent
@@ -89,8 +88,8 @@ trait SwooleEvent
                 $response->end('Nothing');
             }
         } else {
-            $router = new RouterParse($request->server['path_info']);
-            list($controller, $action) = $router->handleRequest();
+            $router = new Router($request->server['path_info']);
+            list($controller, $action) = $router->parse();
 
             try {
                 /** @var HttpController $obj */

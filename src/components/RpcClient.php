@@ -3,15 +3,16 @@
 namespace zcswoole\components;
 
 
+use common\config\Constant;
 use Swoole\Client;
 use zcswoole\rpc\RpcProtocol;
+use zcswoole\utils\Random;
 
 /**
  * rpc客户端
  * Class RpcClient
  * @package zcswoole\components
  * @author wuzhc 2018-08-20
- *
  */
 class RpcClient extends Component
 {
@@ -43,7 +44,7 @@ class RpcClient extends Component
         while (count($servers) > 0) {
             list($key, $server) = $this->getServer($servers);
             $client = new \Swoole\Client(SWOOLE_SOCK_TCP, SWOOLE_SOCK_SYNC);
-            for ($i=0; $i<2; $i++) {
+            for ($i = 0; $i < 2; $i++) {
                 $res = $client->connect($server['host'], $server['port'], 10);
                 if ($res === false && ($client->errCode == 114 || $client->errCode == 105)) {
                     $client->close();
@@ -115,38 +116,65 @@ class RpcClient extends Component
     }
 
     /**
-     * @param $data
+     * rpc同步请求
+     * @param string $router 请求路由,访问方式和http路由一样
+     * @param array $params 参数
      * @return array
      */
-    public function request($data):array
+    public function request($router, $params = []): array
     {
+        if (!$router) {
+            return [];
+        } else {
+            $data['router'] = $router;
+            $data['params'] = $params;
+        }
+
         $returnData = null;
         $commandID = $this->getCommandID();
         $client = $this->getClient();
         if (null !== $client) {
-            if ($client->send(RpcProtocol::encode($data, $this->encodeType, $commandID)) === false) {
+            if (false === $client->send(RpcProtocol::encode($data, $this->encodeType, $commandID))) {
                 $client->close();
                 return [
-                    'code' => $client->errCode,
-                    'data' => $returnData
+                    'data'   => $returnData,
+                    'msg'    => socket_strerror($client->errCode), // errCode等价于Linux errno
+                    'status' => Constant::STATUS_FAILED,
+                ];
+            } else {
+                list($code, , $returnData) = RpcProtocol::decode($client->recv());
+                $client->close();
+                return [
+                    'data'   => $returnData,
+                    'msg'    => RpcProtocol::codeMsg($code),
+                    'status' => RpcProtocol::ERR_UNPACK_OK === $code ? Constant::STATUS_SUCCESS
+                        : Constant::STATUS_FAILED,
                 ];
             }
-            list($code,,$returnData) = RpcProtocol::decode($client->recv());
-            $client->close();
-            return [
-                'code' => $code,
-                'data' => $returnData
-            ];
         } else {
             return [
-                'code' => 1,
-                'data' => $returnData
+                'data'   => $returnData,
+                'msg'    => 'rpc client create failed',
+                'status' => Constant::STATUS_FAILED
             ];
         }
     }
 
-    public function asyncRequest($data)
+    /**
+     * rpc异步请求
+     * @param $router
+     * @param array $params
+     * @return array|bool|null
+     */
+    public function asyncRequest($router, $params = [])
     {
+        if (!$router) {
+            return false;
+        } else {
+            $data['router'] = $router;
+            $data['params'] = $params;
+        }
+
         $returnData = null;
         $commandID = $this->getCommandID();
         if (count($this->servers) == 0) {
@@ -159,7 +187,7 @@ class RpcClient extends Component
         while (count($servers) > 0) {
             list($key, $server) = $this->getServer($servers);
             $client = new \Swoole\Client(SWOOLE_SOCK_TCP, SWOOLE_SOCK_ASYNC);
-            $client->on('connect',function(Client $cli) use ($data, $commandID){
+            $client->on('connect', function (Client $cli) use ($data, $commandID) {
                 if ($cli->send(RpcProtocol::encode($data, $this->encodeType, $commandID)) === false) {
                     $cli->close();
                     return [
@@ -168,12 +196,14 @@ class RpcClient extends Component
                     ];
                 }
             });
-            $client->on('error',function(){});
-            $client->on('close',function(){});
-            $client->on('receive', function(Client $cli){
+            $client->on('error', function () {
+            });
+            $client->on('close', function () {
+            });
+            $client->on('receive', function (Client $cli) {
                 $cli->close();
             });
-            for ($i=0; $i<2; $i++) {
+            for ($i = 0; $i < 2; $i++) {
                 $res = $client->connect($server['host'], $server['port'], 10);
                 if ($res === false && ($client->errCode == 114 || $client->errCode == 105)) {
                     $client->close();
@@ -200,7 +230,7 @@ class RpcClient extends Component
      * 消息命令ID的算法参考swoole_frame
      * @return int
      */
-    public function getCommandID():int
+    public function getCommandID(): int
     {
         $us = strstr(microtime(), ' ', true);
         return intval(strval($us * 1000 * 1000) . rand(100, 999));

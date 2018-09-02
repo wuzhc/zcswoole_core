@@ -9,7 +9,7 @@ namespace zcswoole;
  * @package zcswoole
  * @author wuzhc 2018-08-09
  */
-class RouterParse
+class Router
 {
     public $defaultController = 'index';
     public $defaultAction = 'index';
@@ -28,7 +28,7 @@ class RouterParse
      * http://127.0.0.1:9501/index/index/index => new(/app/controllers/index/Index())->index()
      * @return array
      */
-    public function handleRequest(): array
+    public function parse(): array
     {
         $defaultAction = Config::get('defaultAction') ?? $this->defaultAction;
         $defaultController = Config::get('defaultController') ?? $this->defaultController;
