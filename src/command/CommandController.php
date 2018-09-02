@@ -4,7 +4,7 @@ namespace zcswoole\command;
 
 
 use zcswoole\Config;
-use zcswoole\utils\Console;
+use zcswoole\utils\ConsoleUtil;
 
 /**
  * Class CommandController
@@ -17,7 +17,7 @@ class CommandController
 
     public function __construct($config)
     {
-        Console::checkEnv();
+        ConsoleUtil::checkEnv();
         Config::load($config);
         $this->_context = new CommandContext();
     }
