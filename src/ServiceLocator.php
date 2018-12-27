@@ -13,7 +13,7 @@ use zcswoole\utils\FactoryUtil;
  */
 class ServiceLocator implements ServiceLocatorInterface
 {
-    private $_components = [];
+    private $_services = [];
     private $_definitions = [];
     private $_singletons = [];
 
@@ -35,8 +35,8 @@ class ServiceLocator implements ServiceLocatorInterface
             throw new \Exception("$id class is empty");
         }
 
-        if (isset($this->_components[$id])) {
-            unset($this->_components[$id]);
+        if (isset($this->_services[$id])) {
+            unset($this->_services[$id]);
         }
 
         $this->_singletons[$id] = $isSingleton;
@@ -54,8 +54,8 @@ class ServiceLocator implements ServiceLocatorInterface
     {
         $isSingleton = $this->_singletons[$id] ?? false;
 
-        if (isset($this->_components[$id]) && true === $isSingleton) {
-            return $this->_components[$id];
+        if (isset($this->_services[$id]) && true === $isSingleton) {
+            return $this->_services[$id];
         }
 
         if (!isset($this->_definitions[$id])) {
@@ -67,12 +67,16 @@ class ServiceLocator implements ServiceLocatorInterface
             $obj = $definition;
         } else {
             $className = $definition['class'];
-            unset($definition['class']);
-            $obj = FactoryUtil::createObject($className, [], $definition);
+            $classParams = $definition['params'] ?? [];
+            if (!$className) {
+                throw new \Exception("Unknown className id $id");
+            }
+
+            $obj = FactoryUtil::createObject($className, $classParams, $definition);
         }
 
         if ($isSingleton) {
-            $this->_components[$id] = $definition;
+            $this->_services[$id] = $definition;
         }
 
         return $obj;
@@ -84,7 +88,7 @@ class ServiceLocator implements ServiceLocatorInterface
      */
     public function has($id)
     {
-        return isset($this->_definitions[$id]) || isset($this->_components[$id]);
+        return isset($this->_definitions[$id]) || isset($this->_services[$id]);
     }
 
     /**
