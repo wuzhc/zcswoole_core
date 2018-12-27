@@ -104,7 +104,7 @@ trait SwooleEvent
                 $obj->afterAction();
 
                 // ZCSwoole::$app->table->incr('request_total', 'total');
-                ZCSwoole::$app->logger->asyncWrite($request->server['request_uri']);
+                // ZCSwoole::$app->logger->asyncWrite($request->server['request_uri']);
             } catch (\Error $e) {
                 $response->end($e->getMessage());
             }

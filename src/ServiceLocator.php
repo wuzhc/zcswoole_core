@@ -8,6 +8,7 @@ use zcswoole\utils\FactoryUtil;
 /**
  * 服务定位器
  * Class ServiceLocator
+ *
  * @package zcswoole
  */
 class ServiceLocator implements ServiceLocatorInterface
@@ -17,15 +18,17 @@ class ServiceLocator implements ServiceLocatorInterface
     private $_singletons = [];
 
     /**
-     * @param string $id 组件ID
-     * @param array $definition
-     * @param bool $isSingleton 是否为单例模式,非单例模式下每次获取组件时都会实例化一次对象
+     * 注册服务
+     *
+     * @param string       $id 组件ID
+     * @param array|object $definition
+     * @param bool         $isSingleton 是否为单例模式,非单例模式下每次获取组件时都会实例化一次对象
      * @throws \Exception
      */
-    public function set($id, $definition, $isSingleton = true):void
+    public function set($id, $definition, $isSingleton = true): void
     {
         if (!$definition || !is_array($definition)) {
-            return ;
+            return;
         }
 
         if (!isset($definition['class']) && !$definition['class']) {
@@ -41,7 +44,8 @@ class ServiceLocator implements ServiceLocatorInterface
     }
 
     /**
-     * 获取组件实例
+     * 获取服务实例
+     *
      * @param string $id
      * @return mixed|null|object
      * @throws \Exception
@@ -59,14 +63,19 @@ class ServiceLocator implements ServiceLocatorInterface
         }
 
         $definition = $this->_definitions[$id];
-        if (is_object($definition) && true === $isSingleton) {
-            $this->_components[$id] = $definition;
-            return $definition;
+        if (is_object($definition)) {
+            $obj = $definition;
+        } else {
+            $className = $definition['class'];
+            unset($definition['class']);
+            $obj = FactoryUtil::createObject($className, [], $definition);
         }
 
-        $className = $definition['class'];
-        unset($definition['class']);
-        return $this->_components[$id] = FactoryUtil::createObject($className, [], $definition);
+        if ($isSingleton) {
+            $this->_components[$id] = $definition;
+        }
+
+        return $obj;
     }
 
     /**
@@ -81,6 +90,7 @@ class ServiceLocator implements ServiceLocatorInterface
     /**
      * 魔术方法
      * e.g. ZCSwoole::$app->get('logger') or ZCSwoole::$app->logger
+     *
      * @param $id
      * @return mixed
      */
